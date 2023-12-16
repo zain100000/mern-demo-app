@@ -12,7 +12,7 @@ mongoose
     console.log("Connection Failed!");
   });
 
-const createProducts = async (req, res, next) => {
+const createProduct = async (req, res, next) => {
   const createdProduct = new Product({
     name: req.body.name,
     price: req.body.price,
@@ -21,4 +21,4 @@ const createProducts = async (req, res, next) => {
   res.json(result);
 };
 
-exports.createProducts = createProducts;
+exports.createProduct = createProduct;
