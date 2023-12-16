@@ -37,4 +37,6 @@ server.use(bodyParser.json());
 
 server.post("/products", mongoPractice.createProduct);
 
+// server.get("/products", mongoPractice.getProduct);
+
 server.listen(3000);
