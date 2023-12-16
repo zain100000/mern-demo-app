@@ -35,8 +35,8 @@ const server = express();
 
 server.use(bodyParser.json());
 
-server.post("/products", mongoPractice.createProduct);
+server.post("/products", mongoPractice.createProducts);
 
-// server.get("/products", mongoPractice.getProduct);
+server.get("/products", mongoPractice.getProducts);
 
 server.listen(3000);

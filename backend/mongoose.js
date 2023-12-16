@@ -4,7 +4,7 @@ const Product = require("./models/product");
 
 mongoose
   .connect(
-    "mongodb+srv://zain_2000:Theginyuforce05@cluster0.bu2dyud.mongodb.net/?retryWrites=true&w=majority"
+    "mongodb+srv://zain_2000:Theginyuforce05@cluster0.bu2dyud.mongodb.net/products_test?retryWrites=true&w=majority"
   )
   .then(() => {
     console.log("Connected to database!");
@@ -13,7 +13,7 @@ mongoose
     console.log("Connection failed!");
   });
 
-const createProduct = async (req, res, next) => {
+const createProducts = async (req, res, next) => {
   const createdProduct = new Product({
     name: req.body.name,
     price: req.body.price,
@@ -23,4 +23,12 @@ const createProduct = async (req, res, next) => {
   res.json(result);
 };
 
-exports.createProduct = createProduct;
+const getProducts = async (req, res, next) => {
+  let products;
+  products = await Product.find().exec();
+
+  res.json(products);
+};
+
+exports.createProducts = createProducts;
+exports.getProducts = getProducts;
