@@ -3,22 +3,19 @@ const { validationResult } = require("express-validator");
 const HttpError = require("../models/http-error");
 const User = require("../models/user");
 
-// Get Users
-
 const getUsers = async (req, res, next) => {
   let users;
-
   try {
     users = await User.find({}, "-password");
   } catch (err) {
-    const error = new HttpError("Error Fetching Users", 500);
+    const error = new HttpError(
+      "Fetching users failed, please try again later.",
+      500
+    );
     return next(error);
   }
-
   res.json({ users: users.map((user) => user.toObject({ getters: true })) });
 };
-
-// Signup Users
 
 const signup = async (req, res, next) => {
   const errors = validationResult(req);
@@ -30,24 +27,28 @@ const signup = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   let existingUser;
-
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
-    const error = new HttpError("Signing Up Failed! Try Again Later", 500);
+    const error = new HttpError(
+      "Signing up failed, please try again later.",
+      500
+    );
     return next(error);
   }
 
   if (existingUser) {
-    const error = new HttpError("User Already Exists", 422);
+    const error = new HttpError(
+      "User exists already, please login instead.",
+      422
+    );
     return next(error);
   }
 
   const createdUser = new User({
     name,
     email,
-    image:
-      "https://th.bing.com/th/id/OIP.rvSWtRd_oPRTwDoTCmkP5gHaE8?rs=1&pid=ImgDetMain",
+    image: "https://live.staticflickr.com/7631/26849088292_36fc52ee90_b.jpg",
     password,
     places: [],
   });
@@ -55,14 +56,15 @@ const signup = async (req, res, next) => {
   try {
     await createdUser.save();
   } catch (err) {
-    const error = new HttpError("Signing Up failed, please try again.", 500);
+    const error = new HttpError(
+      "Signing up failed, please try again later.",
+      500
+    );
     return next(error);
   }
 
-  res.status(201).json({ user: createdUser.toObject({ getter: true }) });
+  res.status(201).json({ user: createdUser.toObject({ getters: true }) });
 };
-
-// Login Users
 
 const login = async (req, res, next) => {
   const { email, password } = req.body;
@@ -72,19 +74,25 @@ const login = async (req, res, next) => {
   try {
     existingUser = await User.findOne({ email: email });
   } catch (err) {
-    const error = new HttpError("Loggin In Failed! Try Again Later", 500);
+    const error = new HttpError(
+      "Loggin in failed, please try again later.",
+      500
+    );
     return next(error);
   }
 
   if (!existingUser || existingUser.password !== password) {
     const error = new HttpError(
-      "Invalid Credentials! Could not Logged in ",
+      "Invalid credentials, could not log you in.",
       401
     );
     return next(error);
   }
 
-  res.json({ message: "User Logged in!" });
+  res.json({
+    message: "Logged in!",
+    user: existingUser.toObject({ getters: true }),
+  });
 };
 
 exports.getUsers = getUsers;
